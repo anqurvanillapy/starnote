@@ -15,11 +15,11 @@ Installation
 
 You can clone this repo and run `setup.py` file
 
-'''
+```
 $ git clone git@github.com:anqurvanillapy/tagstars.git
 $ cd tagstars
 $ python setup.py install
-'''
+```
 
 Usage
 -----
