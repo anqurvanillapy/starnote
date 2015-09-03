@@ -1,8 +1,16 @@
 tagstars
 ========
 
+```
+ |                    |                 
+ __|  _` |  _` |  __| __|  _` |  __| __|
+ |   (   | (   |\__ \ |   (   | |  \__ \
+\__|\__,_|\__, |____/\__|\__,_|_|  ____/
+          |___/                         
+```
+
 Add your custom tags locally to your GitHub starred repositories, by
-using commands or the **tagstars** webpage in a convenient way.
+using commands or the webpage in your convenient way.
 
 Requirements
 ------------
