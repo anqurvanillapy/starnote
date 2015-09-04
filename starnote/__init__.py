@@ -2,13 +2,14 @@
 # -*- coding: utf-8 -*-
 
 import argparse
-from tagstars import Tagstars
+from starnote import Starnote
 
 
 def parse_arguments():
 
     parser = argparse.ArgumentParser(
-        description='Tag your GitHub starred repositories')
+        description='''Add your custom labels locally
+        to your GitHub starred repositories''')
 
     parser.add_argument(
         'username',
@@ -21,4 +22,4 @@ def parse_arguments():
 
 if __name__ == '__main__':
     args = parse_arguments()
-    run_tagstars = Tagstars(args)
+    run_starnote = Starnote(args)

@@ -3,7 +3,7 @@
 
 import requests
 
-class Tagstars(object):
+class Starnote(object):
 
     def __init__(self, args):
 
