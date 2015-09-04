@@ -1,23 +1,35 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import urllib, json
+import requests
 
 class Tagstars(object):
 
     def __init__(self, args):
 
         self.username = args.username
-        self.urlhandle = 'https://api.github.com/users/{}/starred'.format(self.username)
+        self.req_url = 'https://api.github.com/users/{}/starred'.format(self.username)
+
+        print "Updating {}'s list of starred repositories...".format(self.username)
 
         try:
-            self.resp = urllib.urlopen(self.urlhandle)
+            self.resp = requests.get(self.req_url)
         except Exception, e:
-                raise e
+            raise e
 
-        self.resplist = json.loads(self.resp.read())
+        self.respjson = self.resp.json()
 
-        if self.resplist:
-            print 'Welcome, {}!'.format(self.username)
+        if isinstance(self.respjson, list):
+            if self.respjson:
+                self.traverse_stars(self.respjson)
+            else:
+                print "User '{}' has no starred repositories".format(self.username)
+        elif isinstance(self.respjson, dict):
+            print "User '{}' not found or invalid username".format(self.username)
         else:
-            print "Starred repositories not found from user '{}'".format(self.username)
+            print "Bad request but still cool, sir"
+
+    def traverse_stars(self, starlist):
+
+        for item in starlist:
+            print item['name']
