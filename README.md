@@ -25,8 +25,8 @@ Installation
 You can clone this repo and run `setup.py` file
 
 ```
-$ git clone git@github.com:anqurvanillapy/tagstars.git
-$ cd tagstars
+$ git clone git@github.com:anqurvanillapy/starnote.git
+$ cd starnote
 $ python setup.py install
 ```
 
