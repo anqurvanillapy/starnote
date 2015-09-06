@@ -10,13 +10,14 @@ starnote
  \/___/   \/__/\/__/\/_/ \/_/  \/_/\/_/\/___/  \/__/\/____/
 ```
 
-Add your custom labels locally to your GitHub starred repositories, by
+Add your custom tags locally to your GitHub starred repositories, by
 using commands or the webpage in your convenient way.
 
 Requirements
 ------------
 
 - Packages for dependencies
+    + `requests`
     + `(Still in process...)`
 
 Installation
