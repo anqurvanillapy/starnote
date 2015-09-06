@@ -14,7 +14,8 @@ def parse_arguments():
 
     parser = argparse.ArgumentParser(
         description='''Add your custom tags locally
-        to your GitHub starred repositories''')
+        to your GitHub starred repositories'''
+        )
 
     subparsers = parser.add_subparsers(
         help='Commands',
@@ -37,7 +38,8 @@ def parse_arguments():
     # List local starred repositories
     list_parser = subparsers.add_parser(
         'list',
-        help='list your local starred repositories')
+        help='list your local starred repositories'
+        )
 
     list_parser.add_argument(
         'username',
@@ -51,7 +53,39 @@ def parse_arguments():
         dest='listTags',
         action='store_true',
         default=False,
-        help='list the tagged starred repositories')
+        help='list the tagged starred repositories'
+        )
+
+    # Add custom tags to starred repositories
+    addtags_parser = subparsers.add_parser(
+        'add',
+        help='add custom tags to certain starred repositories'
+        )
+
+    addtags_parser.add_argument(
+        'username',
+        metavar='username',
+        action='store',
+        help='specify whose repos to add tags'
+        )
+
+    addtags_parser.add_argument(
+        '-i', '--input',
+        metavar='tag',
+        dest='tags',
+        action='store',
+        nargs='+',
+        help='names of tags, in your style'
+        )
+
+    addtags_parser.add_argument(
+        '-o', '--output',
+        metavar='repo',
+        dest='repos',
+        action='store',
+        nargs='+',
+        help='specify the repos your tags added to'
+        )
 
     # Launch starnote book
     book_parser = subparsers.add_parser(

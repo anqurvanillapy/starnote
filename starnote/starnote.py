@@ -22,30 +22,37 @@ class Starnote(object):
 
         self.cmd = args.cmd
         self.username = args.username
-        self.req_url = 'https://api.github.com/users/%s' % self.username
         self.starred_file = '%s_starred.json' % self.username
 
         if self.cmd == 'update':
-
             print "Updating %s's list of starred repositories..." % self.username
-            self.res = requests.get(self.req_url)
-
-            if self.res.status_code == 200:
-                self.update_stars(self.username, self.starred_file)
-            elif self.res.status_code == 403:
-                print "Resquest denied, please wait and try again"
-            else:
-                print "User '%s' not found or invalid username" % self.username
+            self.update_stars(self.username, self.starred_file)
         elif self.cmd == 'list':
             self.listTags = args.listTags
             self.list_stars(self.starred_file, self.listTags)
+        elif self.cmd == 'add':
+            self.tags = args.tags
+            self.repos = args.repos
+            self.add_tags(self.starred_file, self.tags, self.repos)
 
     def update_stars(self, username, filename):
 
         self.total_pages = 1
         denied = False
         stars_url = 'https://api.github.com/users/{}/starred?per_page=100'.format(username)
-        res = requests.get(stars_url)
+
+        try:
+            filehandle = open(filename, 'r')
+            local_latest = json.loads(filehandle.read())[0]['name']
+            res = requests.get(stars_url)
+            remote_latest = res.json()[0]['name']
+
+            if local_latest == remote_latest:
+                print "Your local list of starred repositories is up-to-date"
+                return
+        except:
+            res = requests.get(stars_url)
+
         filebuf = res.json()
 
         if res.links:
@@ -86,18 +93,47 @@ class Starnote(object):
         if listTags:
             print 'Listing tagged repos!'
         else:
-            if '_starred.json' not in filename:        
-                print 'Invalid filename'
+            if not self.isStarredJSON(filename):
                 return
-
-            starlist = []
 
             try:
                 with open(filename, 'r') as filehandle:
-                    for item in json.loads(filehandle.read()):
-                        starlist.append(item['name'])
+                    starlist = json.loads(filehandle.read())
 
-                for i in starlist:
-                    print bcolors.OKBLUE + i + bcolors.ENDC
+                    for item in list(reversed(starlist)):
+                        name  = bcolors.OKBLUE + item['name'] + bcolors.ENDC
+                        stars = bcolors.HEADER + unicode(item['stargazers_count']) + ' stars' + bcolors.ENDC
+                        forks = bcolors.OKGREEN + unicode(item['forks_count']) + ' forks' + bcolors.ENDC
+                        descp = item['description']
+                        print name, stars, forks, descp
             except:
                 print "File '%s' not found, try 'update' your list" % filename
+                return
+
+    def add_tags(self, filename, tags, repos):
+
+        if not self.isStarredJSON(filename):
+            return
+
+        if not tags or not repos:
+            print "Please specify tags and repos using '-i' and '-o' at the same time"
+            return
+
+        try:
+            # Filename for starred_file
+            with open(filename, 'r') as filehandle:
+                starlist = []
+
+                for item in repos:
+                    print item
+        except:
+            print "File '%s' not found, try 'update' your list" % filename
+            return
+
+    def isStarredJSON(self, filename):
+
+        if '_starred' in filename:
+            return True
+        else:
+            print "Invalid filename '%s'" % filename
+            return False
