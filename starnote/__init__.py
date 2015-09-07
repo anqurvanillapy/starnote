@@ -70,7 +70,7 @@ def parse_arguments():
         )
 
     addtags_parser.add_argument(
-        '-i', '--input',
+        '-t', '--tags',
         metavar='tag',
         dest='tags',
         action='store',
@@ -79,12 +79,43 @@ def parse_arguments():
         )
 
     addtags_parser.add_argument(
-        '-o', '--output',
+        '-r', '--repos',
         metavar='repo',
         dest='repos',
         action='store',
         nargs='+',
         help='specify the repos your tags added to'
+        )
+
+    # Remove custom tags from starred repositories
+    removetags_parser = subparsers.add_parser(
+        'remove',
+        help='remove custom tags from starred repositories'
+        )
+
+    removetags_parser.add_argument(
+        'username',
+        metavar='username',
+        action='store',
+        help='specify whose tags to remove'
+        )
+
+    removetags_parser.add_argument(
+        '-t', '--tags',
+        metavar='tag',
+        dest='tags',
+        action='store',
+        nargs='+',
+        help='names of tags you want to remove'
+        )
+
+    removetags_parser.add_argument(
+        '-r', '--repos',
+        metavar='repo',
+        dest='repos',
+        action='store',
+        nargs='+',
+        help='specify the repos to remove tags'
         )
 
     # Launch starnote book
