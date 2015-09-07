@@ -38,7 +38,6 @@ class Starnote(object):
     def update_stars(self, username, filename):
 
         self.total_pages = 1
-        denied = False
         stars_url = 'https://api.github.com/users/{}/starred?per_page=100'.format(username)
 
         try:
@@ -53,7 +52,20 @@ class Starnote(object):
         except:
             res = requests.get(stars_url)
 
+        if res.status_code == 200:
+            pass
+        elif res.status_code == 404:
+            print "User '%s' not found or invalid username" % username
+            return
+        else:
+            print "Bad request, please try again"
+            return
+
         filebuf = res.json()
+
+        if not filebuf:
+            print "User '%s' has no starred repositories" % username
+            return
 
         if res.links:
             self.total_pages = int(res.links['last']['url'].split('&page=')[1])
@@ -70,8 +82,7 @@ class Starnote(object):
 
                 if res.status_code == 403:
                     print "\nResquest denied, please wait and try again"
-                    denied = True
-                    break
+                    return
 
                 filebuf.extend(res.json())
                 stdout.write('=')
@@ -81,12 +92,11 @@ class Starnote(object):
         else:
             print "Only 1 page found (100 results per page)"
 
-        if not denied:
-            with open(filename, 'w') as filehandle:
-                json.dump(filebuf, filehandle, indent=2)
+        with open(filename, 'w') as filehandle:
+            json.dump(filebuf, filehandle, indent=2)
 
-            print "Successfully updated and written in '%s_starred.json'" % username
-            # print len(filebuf)
+        print "Successfully updated and written in '%s_starred.json'" % username
+        # print len(filebuf)
 
     def list_stars(self, filename, listTags=False):
 
@@ -100,6 +110,10 @@ class Starnote(object):
                 with open(filename, 'r') as filehandle:
                     starlist = json.loads(filehandle.read())
 
+                    if not starlist:
+                        print "File '%s' is empty, try 'update' your list" % filename
+                        return
+
                     for item in list(reversed(starlist)):
                         name  = bcolors.OKBLUE + item['name'] + bcolors.ENDC
                         stars = bcolors.HEADER + unicode(item['stargazers_count']) + ' stars' + bcolors.ENDC
@@ -107,8 +121,7 @@ class Starnote(object):
                         descp = item['description']
                         print name, stars, forks, descp
             except:
-                print "File '%s' not found, try 'update' your list" % filename
-                return
+                print "File '%s' caused an error, try 'update' your list" % filename
 
     def add_tags(self, filename, tags, repos):
 
@@ -122,17 +135,60 @@ class Starnote(object):
         try:
             # Filename for starred_file
             with open(filename, 'r') as filehandle:
-                starlist = []
+                starlist = json.loads(filehandle.read())
+                starcatcher = []
 
-                for item in repos:
-                    print item
+                for repo in repos:
+                    repo_not_found = True
+
+                    for star in starlist:
+                        if repo == star['name']:
+                            starcatcher.append(star)
+                            repo_not_found = False
+                            break
+
+                    if repo_not_found:
+                        print "Repo '%s' not found" % repo
         except:
-            print "File '%s' not found, try 'update' your list" % filename
+            print "File '%s' caused an error, try 'update' your list" % filename
             return
+
+        tagged_filename = filename.split('_starred.')[0] + '_tagged.json'
+
+        try:
+            with open(tagged_filename, 'r') as filehandle:
+                startagged = json.loads(filehandle.read())
+        except:
+            startagged = []
+
+        try:
+            for item in starcatcher:
+                stardict = {
+                    "name": item['name'],
+                    "description": item['description'],
+                    "html_url": item['html_url'],
+                    "stargazers_count": int(item['stargazers_count']),
+                    "forks_count": int(item['forks_count']),
+                    "tags": []
+                }
+
+                for tag in tags:
+                    stardict['tags'].append(tag)
+
+                startagged.append(stardict)
+                print "%d Tags added to repo '%s'" % (len(tags), stardict['name'])
+
+            # TODO:
+            #   Remove duplicates
+
+            with open(tagged_filename, 'w') as filehandle:
+                filehandle.write(json.dumps(startagged, indent=2))
+        except Exception, e:
+            raise e
 
     def isStarredJSON(self, filename):
 
-        if '_starred' in filename:
+        if '_starred.' in filename:
             return True
         else:
             print "Invalid filename '%s'" % filename

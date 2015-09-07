@@ -16,7 +16,7 @@ using commands or the webpage in your convenient way.
 Requirements
 ------------
 
-- Packages for dependencies
+- Packages of dependencies
     + `requests`
     + `(Still in process...)`
 
