@@ -118,6 +118,39 @@ def parse_arguments():
         help='specify the repos to remove tags'
         )
 
+    # Search for custom tags or repositories
+    search_parser = subparsers.add_parser(
+        'search',
+        help='search for tags or repositories'
+        )
+
+    search_parser.add_argument(
+        'username',
+        metavar='username',
+        action='store',
+        help='specify whose tags or repos to search for'
+        )
+
+    kwd_parser = search_parser.add_mutually_exclusive_group()
+
+    kwd_parser.add_argument(
+        '-t', '--tags',
+        metavar='tag',
+        dest='tags',
+        action='store',
+        nargs='+',
+        help='names of tags you want to search for'
+        )
+
+    kwd_parser.add_argument(
+        '-r', '--repos',
+        metavar='repo',
+        dest='repos',
+        action='store',
+        nargs='+',
+        help='specify the repos to search for'
+        )
+
     # Launch starnote book
     book_parser = subparsers.add_parser(
         'book',
