@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# TODO:
+#   1. Add fuzzy finder to `-t` and `-r` arguments
+#   2. Collect the err msgs to a class
+
 import os, sys, argparse
-from starnote import Starnote
+import starnote
 
 def init_path():
 
@@ -22,30 +26,29 @@ def parse_arguments():
         dest='cmd'
         )
 
+    # Configure username
+    config_parser = subparsers.add_parser(
+        'config',
+        help='configure your username'
+        )
+
+    config_parser.add_argument(
+        'username',
+        metavar='username',
+        action='store',
+        help='specify whose repos to manage'
+        )
+
     # Update local list
     update_parser = subparsers.add_parser(
         'update',
         help='update local list of starred repositories'
         )
 
-    update_parser.add_argument(
-        'username',
-        metavar='username',
-        action='store',
-        help='specify whose repos to update'
-        )
-
     # List local starred repositories
     list_parser = subparsers.add_parser(
         'list',
         help='list your local starred repositories'
-        )
-
-    list_parser.add_argument(
-        'username',
-        metavar='username',
-        action='store',
-        help='specify whose repos to list'
         )
 
     list_parser.add_argument(
@@ -60,13 +63,6 @@ def parse_arguments():
     addtags_parser = subparsers.add_parser(
         'add',
         help='add custom tags to certain starred repositories'
-        )
-
-    addtags_parser.add_argument(
-        'username',
-        metavar='username',
-        action='store',
-        help='specify whose repos to add tags'
         )
 
     addtags_parser.add_argument(
@@ -94,13 +90,6 @@ def parse_arguments():
         )
 
     removetags_parser.add_argument(
-        'username',
-        metavar='username',
-        action='store',
-        help='specify whose tags to remove'
-        )
-
-    removetags_parser.add_argument(
         '-t', '--tags',
         metavar='tag',
         dest='tags',
@@ -122,13 +111,6 @@ def parse_arguments():
     search_parser = subparsers.add_parser(
         'search',
         help='search for tags or repositories'
-        )
-
-    search_parser.add_argument(
-        'username',
-        metavar='username',
-        action='store',
-        help='specify whose tags or repos to search for'
         )
 
     kwd_parser = search_parser.add_mutually_exclusive_group()
@@ -157,16 +139,9 @@ def parse_arguments():
         help='manage starred repositories in webpage'
         )
 
-    book_parser.add_argument(
-        'username',
-        metavar='username',
-        action='store',
-        help='specify whose repos to access'
-        )
-
     return parser.parse_args()
 
 if __name__ == '__main__':
     init_path()
     args = parse_arguments()
-    run_starnote = Starnote(args)
+    run_starnote = starnote.Starnote(args)

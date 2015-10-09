@@ -1,0 +1,54 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="container">
+  <div class="row">
+
+    <div class="col-sm-6">
+      <h4>
+        <a href="/update" class="btn btn-default">Update</a>
+        stars/<a href="{{ user_url }}">{{ username }}</a>
+        <small id="status">on {{ current_page }} / {{ total_pages }}</small>
+      </h4>
+    </div>
+    <div class="col-sm-6">
+      <form action="/starred" method="post" class="navbar-form pull-right" role="search">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Tags or repos...">
+        </div>
+        <button type="submit" class="btn btn-default">Search</button>
+      </form>
+    </div>
+
+    <div class="col-sm-12">
+    {% for item in starlist %}
+      <div class="capsule">
+        <h3><a href="{{ item['html_url'] }}">{{ item['name'] }}</a>
+          <small>
+            <span class="text-success">{{ item['stargazers_count'] }} stars</span> <span class="text-warning">{{ item['forks_count'] }} forks</span>
+          </small>
+        </h3>
+        <p>{{ item['description'] }}</p>
+      </div>
+    {% endfor %}
+    </div>
+
+    <div id="pagination" class="col-sm-12">
+      <div class="col-sm-2 text-left">
+        <a href="/starred/previous">&lArr; Previous</a>
+      </div>
+      <div id="status" class="col-sm-8 text-center">{{ current_page }} / {{ total_pages }}</div>
+      <div class="col-sm-2 text-right">
+        <a href="/starred/next">Next &rArr;</a>
+      </div>
+    </div>
+    
+  </div>
+</div>
+{% endblock content %}
+{% block js %}
+<script type="text/javascript">
+(function(){
+  document.querySelector('#starred').setAttribute('class', 'active');
+})();
+</script>
+{% endblock js %}

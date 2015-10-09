@@ -1,0 +1,28 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-6">
+      <h4>
+        <a href="/update" class="btn btn-default">Update</a>
+        <a href="{{ user_url }}">{{ username }}</a>'s tagged list
+      </h4>
+    </div>
+    <div class="col-sm-6">
+      <form action="/tagged" method="post" class="navbar-form pull-right" role="search">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Tags or repos...">
+        </div>
+        <button type="submit" class="btn btn-default">Search</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+{% block js %}
+<script type="text/javascript">
+(function(){
+  document.querySelector('#tagged').setAttribute('class', 'active');
+})();
+</script>
+{% endblock js %}

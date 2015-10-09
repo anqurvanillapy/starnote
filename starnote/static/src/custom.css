@@ -1,0 +1,32 @@
+/** 
+ * Custom styles for StarnoteBook
+ *
+ * Copyright 2015 Anqurvanillapy
+ * Mainly overrides from Bootstrap example jumbotrom-narrow
+ */
+
+#caption {
+    color: inherit;
+    text-decoration: inherit;
+    font-family: Source Sans Pro, helvetica;
+    font-size: 40px;
+    font-weight: 900;
+}
+
+.capsule {
+    width: 100%;
+    border-bottom: solid 1px grey;
+}
+
+.capsule h3 a {
+    color: black;
+}
+
+#pagination {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+    #status {
+        -webkit-user-select: none;
+    }

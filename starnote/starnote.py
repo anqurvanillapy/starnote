@@ -20,8 +20,45 @@ class Starnote(object):
 
     def __init__(self, args):
 
+        self.args = args
         self.cmd = args.cmd
-        self.username = args.username
+        self.settings_filename = 'settings.json'
+
+        if self.cmd == 'config':
+            self.username = args.username
+            try:
+                pagination = int(input('> how many repos per page do you want? [15] '))
+
+                if pagination <= 0:
+                    pagination = 15
+                    print "error: invalid input, setting 15 for pagination as default"
+            except: # Exception, e:
+                # raise e
+                pagination = 15
+                print "error: invalid input, setting 15 for pagination as default"
+
+            settings = {
+                "global_username": self.username,
+                "pagination": pagination
+            }
+
+            try:
+                with open(self.settings_filename, 'w') as filehandle:
+                    json.dump(settings, filehandle, indent=2)
+            except: # Exception, e:
+                # raise e
+                print "error: unable to write settings file"
+                return
+        else:
+            try:
+                with open(self.settings_filename, 'r') as filehandle:
+                    settings = json.loads(filehandle.read())
+                    self.username = settings['global_username']
+            except: # Exception, e:
+                # raise e
+                print "error: unable to read settings file, try 'config' your username"
+                return
+
         self.starred_file = '%s_starred.json' % self.username
         self.tagged_file = '%s_tagged.json' % self.username
 
@@ -36,6 +73,8 @@ class Starnote(object):
             self.remove_tags(self.tagged_file, args.tags, args.repos)
         elif self.cmd == 'search':
             self.search_for_tags(self.tagged_file, args.tags, args.repos)
+        elif self.cmd == 'book':
+            self.launch_starnotebook(self.username, self.starred_file, self.tagged_file)
 
     def update_stars(self, username, filename):
 
@@ -347,6 +386,14 @@ class Starnote(object):
         except: # Exception, e:
             # raise e
             print "error: file '%s' not found, try 'add' some tags" % filename
+
+    def launch_starnotebook(self, username, starred_file, tagged_file):
+
+        import starnotebook
+
+        snb = starnotebook
+        snb.init_user(username, starred_file, tagged_file)
+        snb.run_starnotebook()
 
     def isStarredJSON(self, filename):
 
